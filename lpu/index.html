@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mess Pass</title>
+<style>
+  :root{
+    --card-max:500px;
+    --card-radius:18px;
+    --green: #26a42b;
+    --brown: #7a2d1e;
+    --text:#111;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: 'Roboto', sans-serif;
+    background:f3f3f0;
+    color:var(--text);
+  }
+
+  .topbar{
+    width:100%;
+    height:68px;
+    background:#333;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:sticky;
+    top:0;
+    z-index:30;
+  }
+  .topbar .handle{
+    width:44px;height:6px;border-radius:4px;background:#d6d6d6;
+    position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  }
+  .topbar span{font-size:17px;font-weight:400}
+
+  .close-btn{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    background:transparent;
+    border:none;
+    color:#ffffff;
+    font-size:22px;
+    font-weight:400;
+    padding:4px 6px;
+  }
+
+  .wrap{display:flex;justify-content:center;padding:18px 8px 40px;}
+  .card{
+    width:97%;
+    max-width:var(--card-max);
+    background:#f2f2f2;
+    border-radius:var(--card-radius);
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.6),
+        0 8px 18px rgba(0,0,0,0.12);
+    position:relative;
+  }
+
+  .timer{
+    position:absolute;
+    top:-12px;
+    right:-10px;
+    min-width:45px;
+    height:40px;
+    padding:0 10px;
+    border-radius:18px;
+    background:#999;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:400;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.2);
+    box-shadow:0 8px 18px rgba(0,0,0,0.12), inset 0 2px 6px rgba(255,255,255,0.6);
+  }
+
+  .content{padding:18px 18px;}
+
+  .profile-row{
+    display:flex;
+    gap:24px;   /* slight improvement */
+    align-items:center;
+    margin-top:12px;
+  }
+
+  .avatar{
+    width:145px;
+    height:148px;
+    border-radius:0;
+    overflow:hidden;
+    box-shadow:0 12px 26px rgba(0,0,0,0.18);
+  }
+
+  .avatar-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position: center 10%;
+  }
+
+  /* ✅ QR BOX */
+  .qr-box{
+  width:148px;
+  height:138px;
+  background:#fff;
+  border:1px solid #333;   /* darker clean border */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:6px;
+  overflow:hidden;         /* removes inner spacing effect */
+  box-shadow:0 12px 26px rgba(0,0,0,0.18);
+}
+
+  .title-col{flex:1;}
+
+  .meal-title{
+    font-size:16px;
+    font-weight:500;
+    color:#000;
+    margin-top:1px;
+    margin-bottom:6px;
+    margin-left:1px;
+    line-height:1.8;
+    letter-spacing:-0.9px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.9);
+  }
+
+  .sid, .line {
+    font-size:14px;
+    font-weight:500;
+    color:#000;
+    margin-bottom:12px;
+    margin-left:3px;
+    line-height:0.9;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.9);
+  }
+
+  .course{
+    font-size:16px;
+    font-weight:400;
+    margin-top:24px;
+    margin-bottom:48px;
+    text-align:center;
+    margin-left:0px;
+    line-height:1.4;
+    letter-spacing:0.1px; 
+    color:#222;
+   text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+   
+  }
+
+  .dt-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:32px;
+    margin-bottom:38px;
+    padding:0 64px;
+    margin-left:-58px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+  }
+  .dt-row .date,.dt-row .time{
+    font-size:19px;
+    font-weight:400;
+  }
+
+  .approved{
+    text-align:center;
+    font-size:24px;
+    font-weight:700;
+    color:#53bf11;
+    margin-bottom:6px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .rate-wrap{
+    text-align:center;
+  }
+  .rate-btn{
+    padding:4px 6px;
+    border-radius:10px;
+    border:2px solid var(--brown);
+    background:#f3f3f0;
+    font-size:16px;
+    font-weight:600;
+  }
+
+  .brown-box{
+    width:100%;
+    background:#4a2e0b;  
+    padding:20px;
+    border-bottom-left-radius:var(--card-radius);
+    border-bottom-right-radius:var(--card-radius);
+    margin-top:-12px;
+  }
+
+  .brown-inner{
+    background:#FEFEFE;
+    border-radius:10px;
+    border:10px solid transparent;
+    height:350px; 
+    width:100%;
+    overflow:hidden;
+  }
+
+  .close-btn{
+    position:absolute;
+    right:12px;
+    top:32px;
+    background:transparent;
+    border:none;
+    font-size:16px;
+    color:#f0f0f0;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .left-col{
+  width:145px;   /* same as image & QR */
+  text-align:center;
+  margin-top:10px;   /* controls gap */
+}
+.right-col{
+  width:145px;   /* same as image & QR */
+  text-align:center;
+  margin-top:3px;
+}
+
+.left-col .sid, .left-col .line,
+.right-col .meal-title, .right-col .line{
+  margin-left:0;
+}
+.assigned-mess{
+  font-size:16px;
+  font-weight:400;
+  margin-top:-20px;   /* adjust spacing */
+  margin-bottom:38px;
+  text-align:center;
+  margin-left:0px;
+  letter-spacing:0.1px; 
+  color:#222;
+  text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+  
+}
+.qr-img{
+  width:105%;
+  height:105%;
+  object-fit:cover;
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="handle"></div>
+    <span>Mess Pass</span>
+    <button class="close-btn" onclick="history.back()">✕</button>
+</div>
+
+<div class="wrap">
+  <article class="card">
+
+    <div class="timer" id="timerEl">30</div>
+
+    <div class="content">
+      <div class="profile-row">
+
+  <div>
+    <div class="avatar">
+      <img src="profile.jpg" class="avatar-img">
+    </div>
+    <div class="left-col">
+      <div class="sid">12311286</div>
+      <div class="line">Jagan Mohan</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="qr-box">
+      <img src="qr.png" class="qr-img">
+    </div>
+    <div class="right-col">
+      <div class="meal-title" id="mealTitle"></div>
+      <div class="line">Mess-Centre-02</div>
+    </div>
+  </div>
+
+</div>
+
+      <div class="course">
+        P132: B.Tech. (Computer Science and Engineering)(2023)
+      </div>
+    <div class="assigned-mess">
+  Your Assigned Mess - Mess-Centre-02
+</div>
+
+      <div class="dt-row">
+        <div class="date" id="dateText">Nov 20, 2025</div>
+        <div class="time" id="timeText">1:24 AM</div>
+      </div>
+
+      <div class="approved">Meal Approved</div>
+
+      <div class="rate-wrap">
+        <button class="rate-btn">⭐ RATE US</button>
+      </div>
+
+    </div>
+
+    <div class="brown-box">
+      <div class="brown-inner">
+        <video src="video.mp4" autoplay muted playsinline style="
+            width:94%;
+            height:94%;
+            object-fit:contain;
+            display:block;
+            margin-left:14px;
+            margin-top:10px; 
+        "></video>
+      </div>
+    </div>
+
+  </article>
+</div>
+
+<script>
+let sec = 30;
+const timerEl = document.getElementById("timerEl");
+timerEl.textContent = sec;
+
+let t = setInterval(()=>{
+  sec--;
+  if(sec <= 1){
+    timerEl.textContent = 1;
+    clearInterval(t);
+  } else {
+    timerEl.textContent = sec;
+  }
+},1000);
+
+function pad(n){return n<10?"0"+n:n;}
+function updateDT(){
+  const now=new Date();
+  const m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("dateText").textContent=
+    `${m[now.getMonth()]} ${pad(now.getDate())}, ${now.getFullYear()}`;
+  let h=now.getHours(), mm=pad(now.getMinutes()), ap=h>=12?"PM":"AM";
+  h=h%12||12;
+  document.getElementById("timeText").textContent=`${h}:${mm} ${ap}`;
+}
+updateDT();
+setInterval(updateDT,1000);
+
+function updateMeal() {
+  const hour = new Date().getHours();
+  let meal = "Dinner";
+  if (hour < 11) meal = "BreakFast";
+  else if (hour < 16) meal = "Lunch";
+  document.getElementById("mealTitle").textContent = meal;
+}
+updateMeal();
+</script>
+
+</body>
+</html>
