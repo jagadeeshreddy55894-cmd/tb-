@@ -1,10 +1,12 @@
 {
-  "name": "Mess Pass",
-  "short_name": "MessPass",
-  "start_url": "index.html",
+  "name": "LPU Touch",
+  "short_name": "LPU Touch",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#3b3b3b",
-  "theme_color": "#3b3b3b",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
