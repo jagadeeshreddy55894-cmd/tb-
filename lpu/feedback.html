@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Mess Pass</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #111;
+}
+
+
+/* =====================================================
+   MESS PASS BACKGROUND
+===================================================== */
+
+.mess-pass {
+    position: absolute;
+    inset: 0;
+    background: #111;
+}
+
+
+/* =====================================================
+   FEEDBACK APP
+===================================================== */
+
+.feedback-app {
+    position: absolute;
+    inset: 0;
+}
+
+
+/* =====================================================
+   FEEDBACK HEADER
+===================================================== */
+
+.feedback-header {
+
+    height: 78px;
+
+    width: 100%;
+
+    background: #333;
+
+    color: white;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    z-index: 1000;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+/* Handle */
+
+.handle {
+
+    position: absolute;
+
+    top: 8px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 62px;
+
+    height: 6px;
+
+    border-radius: 10px;
+
+    background: #bdbdbd;
+}
+
+
+/* Header title */
+
+.header-title {
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+    margin-top: 10px;
+}
+
+
+/* Close */
+
+.close-button {
+
+    position: absolute;
+
+    right: 20px;
+
+    top: 27px;
+
+    width: 35px;
+
+    height: 35px;
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 34px;
+
+    font-weight: 200;
+
+    line-height: 30px;
+
+    cursor: pointer;
+
+    padding: 0;
+}
+
+
+/* =====================================================
+   SCROLLING CONTENT
+===================================================== */
+
+.feedback-scroll {
+
+    position: absolute;
+
+    top: 78px;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background: #fff;
+
+    padding-bottom: 40px;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =====================================================
+   RATING SECTION
+===================================================== */
+
+.rating-section {
+
+    text-align: center;
+
+    padding-top: 32px;
+
+    padding-bottom: 10px;
+}
+
+
+.rating-title {
+
+    font-size: 34px;
+
+    line-height: 1.1;
+
+    font-weight: 400;
+
+    color: #111;
+}
+
+
+.rating-subtitle {
+
+    margin-top: 25px;
+
+    font-size: 23px;
+
+    line-height: 1.2;
+
+    color: #111;
+}
+
+
+/* =====================================================
+   STARS
+===================================================== */
+
+.stars {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 42px;
+}
+
+
+.star {
+
+    width: 47px;
+
+    height: 47px;
+
+    border: none;
+
+    background: transparent;
+
+    padding: 0;
+
+    color: #f3c51b;
+
+    font-size: 48px;
+
+    line-height: 47px;
+
+    cursor: pointer;
+
+    font-family: Arial, sans-serif;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.star:focus {
+    outline: none;
+}
+
+
+/* =====================================================
+   1-4 STAR FORM
+===================================================== */
+
+#negativeForm {
+
+    display: none;
+
+    padding-top: 12px;
+}
+
+
+/* =====================================================
+   MEAL TYPE
+===================================================== */
+
+.meal-title {
+
+    font-size: 27px;
+
+    font-weight: 400;
+
+    color: #111;
+
+    margin-left: 22px;
+
+    margin-top: 10px;
+
+    margin-bottom: 25px;
+}
+
+
+.meal-buttons {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 0 23px;
+
+    gap: 8px;
+}
+
+
+.meal-button {
+
+    height: 58px;
+
+    width: 25%;
+
+    padding: 0 5px;
+
+    background: #fff;
+
+    border: 3px solid #909090;
+
+    border-radius: 20px;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    color: #111;
+
+    cursor: pointer;
+}
+
+
+.meal-button.selected {
+
+    background: #eeeeee;
+
+    border-color: #555;
+}
+
+
+/* =====================================================
+   CATEGORY
+===================================================== */
+
+.category {
+
+    margin-top: 66px;
+}
+
+
+.category-title {
+
+    text-align: center;
+
+    font-size: 27px;
+
+    font-weight: 700;
+
+    color: #444;
+
+    text-decoration: underline;
+
+    margin-bottom: 38px;
+}
+
+
+/* =====================================================
+   FEEDBACK LIST
+===================================================== */
+
+.feedback-list {
+
+    width: calc(100% - 45px);
+
+    margin: 0 auto;
+
+    background: #fff;
+}
+
+
+.feedback-item {
+
+    min-height: 76px;
+
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 25px 0 28px;
+
+    font-size: 24px;
+
+    color: #111;
+}
+
+
+/* =====================================================
+   CHECKBOX
+===================================================== */
+
+.feedback-checkbox {
+
+    width: 31px;
+
+    height: 31px;
+
+    border: 3px solid #888;
+
+    border-radius: 4px;
+
+    flex-shrink: 0;
+
+    cursor: pointer;
+
+    position: relative;
+
+    background: white;
+}
+
+
+.feedback-checkbox input {
+
+    position: absolute;
+
+    opacity: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    cursor: pointer;
+}
+
+
+.feedback-checkbox.checked {
+
+    background: #ef8b25;
+
+    border-color: #ef8b25;
+}
+
+
+.feedback-checkbox.checked::after {
+
+    content: "✓";
+
+    position: absolute;
+
+    left: 4px;
+
+    top: -3px;
+
+    color: white;
+
+    font-size: 25px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   REMARKS
+===================================================== */
+
+.remarks-section {
+
+    margin-top: 45px;
+
+    padding: 0 58px;
+}
+
+
+.remarks-title {
+
+    font-size: 27px;
+
+    font-weight: 700;
+
+    color: #444;
+
+    text-decoration: underline;
+
+    margin-bottom: 8px;
+}
+
+
+.remarks-box {
+
+    width: 100%;
+
+    height: 70px;
+
+    border: 2px solid #ccc;
+
+    border-radius: 3px;
+
+    resize: none;
+
+    padding: 10px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 18px;
+
+    outline: none;
+}
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+.submit-container {
+
+    text-align: center;
+
+    margin-top: 44px;
+
+    margin-bottom: 30px;
+}
+
+
+.submit-button {
+
+    width: 260px;
+
+    height: 76px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        #ff806f,
+        #ffd46d
+    );
+
+    color: #222;
+
+    font-size: 27px;
+
+    cursor: pointer;
+
+    box-shadow: 0 7px 10px rgba(0,0,0,0.25);
+}
+
+
+/* =====================================================
+   5 STAR PAGE
+===================================================== */
+
+#fiveStarPage {
+
+    display: none;
+
+    text-align: center;
+
+    padding: 40px 20px;
+}
+
+
+.five-star-title {
+
+    font-size: 30px;
+
+    margin-top: 20px;
+
+    color: #111;
+}
+
+
+.five-star-message {
+
+    font-size: 22px;
+
+    margin-top: 25px;
+
+    color: #555;
+}
+
+
+/* =====================================================
+   SUCCESS POPUP
+===================================================== */
+
+#successOverlay {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    background: rgba(0,0,0,0.35);
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.success-box {
+
+    width: calc(100% - 106px);
+
+    max-width: 470px;
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    text-align: center;
+
+    box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+}
+
+
+.success-box h2 {
+
+    margin-top: 34px;
+
+    font-size: 29px;
+
+    font-weight: 700;
+
+    color: #111;
+}
+
+
+.success-box p {
+
+    margin: 18px 28px 35px;
+
+    font-size: 21px;
+
+    line-height: 1.35;
+
+    color: #111;
+}
+
+
+.success-divider {
+
+    height: 1px;
+
+    width: 100%;
+
+    background: #ddd;
+}
+
+
+.success-ok {
+
+    width: 100%;
+
+    height: 70px;
+
+    border: none;
+
+    background: #fff;
+
+    color: #e98a26;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   SMALL PHONE
+===================================================== */
+
+@media (max-width:380px) {
+
+    .header-title {
+        font-size: 23px;
+    }
+
+    .close-button {
+        right: 17px;
+        top: 25px;
+        font-size: 32px;
+    }
+
+    .rating-section {
+        padding-top: 27px;
+    }
+
+    .rating-title {
+        font-size: 31px;
+    }
+
+    .rating-subtitle {
+        font-size: 21px;
+        margin-top: 22px;
+    }
+
+    .stars {
+        gap: 6px;
+        margin-top: 38px;
+    }
+
+    .star {
+        width: 45px;
+        height: 45px;
+        font-size: 45px;
+    }
+
+    .meal-title {
+        font-size: 24px;
+    }
+
+    .meal-button {
+        font-size: 17px;
+    }
+
+    .category-title {
+        font-size: 25px;
+    }
+
+    .feedback-item {
+        min-height: 72px;
+        font-size: 20px;
+    }
+
+    .remarks-title {
+        font-size: 24px;
+    }
+
+    .submit-button {
+        width: 260px;
+        height: 70px;
+        font-size: 25px;
+    }
+
+}
+
+
+/* =====================================================
+   END CSS
+===================================================== */
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     MESS PASS BACKGROUND
+===================================================== -->
+
+<div class="mess-pass"></div>
+
+
+<!-- =====================================================
+     FEEDBACK APP
+===================================================== -->
+
+<div class="feedback-app">
+
+
+    <!-- HEADER -->
+
+    <div class="feedback-header">
+
+        <div class="handle"></div>
+
+        <div class="header-title">
+            Feedback
+        </div>
+
+        <button
+            class="close-button"
+            onclick="closeFeedback()">
+
+            ×
+
+        </button>
+
+    </div>
+
+
+    <!-- SCROLLING AREA -->
+
+    <div class="feedback-scroll">
+
+
+        <!-- =================================================
+             RATING
+        ================================================== -->
+
+        <section class="rating-section">
+
+            <h1 class="rating-title">
+                Mess Feedback
+            </h1>
+
+            <p class="rating-subtitle">
+                Tell us how we did!
+            </p>
+
+
+            <div class="stars">
+
+                <button
+                    class="star"
+                    onclick="selectRating(1)">
+                    ☆
+                </button>
+
+                <button
+                    class="star"
+                    onclick="selectRating(2)">
+                    ☆
+                </button>
+
+                <button
+                    class="star"
+                    onclick="selectRating(3)">
+                    ☆
+                </button>
+
+                <button
+                    class="star"
+                    onclick="selectRating(4)">
+                    ☆
+                </button>
+
+                <button
+                    class="star"
+                    onclick="selectRating(5)">
+                    ☆
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             1-4 STAR FORM
+        ================================================== -->
+
+        <div id="negativeForm">
+
+
+            <!-- MEAL -->
+
+            <div class="meal-title">
+                Tap to select meal type
+            </div>
+
+
+            <div class="meal-buttons">
+
+                <button
+                    class="meal-button"
+                    onclick="selectMeal(this)">
+                    Breakfast
+                </button>
+
+                <button
+                    class="meal-button"
+                    onclick="selectMeal(this)">
+                    Lunch
+                </button>
+
+                <button
+                    class="meal-button"
+                    onclick="selectMeal(this)">
+                    Tea
+                </button>
+
+                <button
+                    class="meal-button"
+                    onclick="selectMeal(this)">
+                    Dinner
+                </button>
+
+            </div>
+
+
+            <!-- SERVICE / STAFF -->
+
+            <section class="category">
+
+                <h2 class="category-title">
+                    Service/Staff
+                </h2>
+
+                <div class="feedback-list">
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Food served late
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Staff not polite
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- QUANTITY -->
+
+            <section class="category">
+
+                <h2 class="category-title">
+                    Quantity
+                </h2>
+
+                <div class="feedback-list">
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Refills not available
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Less food
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HYGIENE -->
+
+            <section class="category">
+
+                <h2 class="category-title">
+                    Hygiene
+                </h2>
+
+                <div class="feedback-list">
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Staff not hygienic
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Utensils dirty
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Mess not clean
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOD QUALITY -->
+
+            <section class="category">
+
+                <h2 class="category-title">
+                    Food Quality
+                </h2>
+
+                <div class="feedback-list">
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Tasteless
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Not fresh
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Undercooked / overcooked
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="feedback-item">
+
+                        <span>
+                            Too oily/greasy
+                        </span>
+
+                        <label class="feedback-checkbox">
+
+                            <input
+                                type="checkbox"
+                                onchange="toggleCheckbox(this)">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- REMARKS -->
+
+            <div class="remarks-section">
+
+                <div class="remarks-title">
+                    Remarks (If Any)
+                </div>
+
+                <textarea
+                    class="remarks-box">
+                </textarea>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <div class="submit-container">
+
+                <button
+                    class="submit-button"
+                    onclick="submitFeedback()">
+
+                    Submit
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             5 STAR PLACEHOLDER
+        ================================================== -->
+
+        <div id="fiveStarPage">
+
+            <div class="five-star-title">
+                Thank you! ⭐⭐⭐⭐⭐
+            </div>
+
+            <div class="five-star-message">
+                We'll ask you what you liked about
+                your mess experience.
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUCCESS MESSAGE POPUP
+===================================================== -->
+
+<div id="successOverlay">
+
+    <div class="success-box">
+
+        <h2>
+            Message
+        </h2>
+
+        <p>
+            Thank you for your feedback! Your input
+            helps improve the mess service.
+        </p>
+
+        <div class="success-divider"></div>
+
+        <button
+            class="success-ok"
+            onclick="closeSuccessMessage()">
+
+            OK
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CURRENT RATING
+===================================================== */
+
+let selectedRating = 0;
+
+
+/* =====================================================
+   STAR SELECTION
+===================================================== */
+
+function selectRating(rating) {
+
+    selectedRating = rating;
+
+
+    const stars =
+        document.querySelectorAll(".star");
+
+
+    stars.forEach(function(star, index) {
+
+        if (index < rating) {
+
+            star.textContent = "★";
+
+        } else {
+
+            star.textContent = "☆";
+
+        }
+
+    });
+
+
+    const negativeForm =
+        document.getElementById("negativeForm");
+
+
+    const fiveStarPage =
+        document.getElementById("fiveStarPage");
+
+
+    if (rating >= 1 && rating <= 4) {
+
+        negativeForm.style.display = "block";
+
+        fiveStarPage.style.display = "none";
+
+    }
+
+
+    if (rating === 5) {
+
+        negativeForm.style.display = "none";
+
+        fiveStarPage.style.display = "block";
+
+    }
+
+}
+
+
+/* =====================================================
+   MEAL SELECTION
+===================================================== */
+
+function selectMeal(button) {
+
+    const buttons =
+        document.querySelectorAll(".meal-button");
+
+
+    buttons.forEach(function(item) {
+
+        item.classList.remove("selected");
+
+    });
+
+
+    button.classList.add("selected");
+
+}
+
+
+/* =====================================================
+   CHECKBOX
+===================================================== */
+
+function toggleCheckbox(input) {
+
+    const parent =
+        input.parentElement;
+
+
+    if (input.checked) {
+
+        parent.classList.add("checked");
+
+    } else {
+
+        parent.classList.remove("checked");
+
+    }
+
+}
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+function submitFeedback() {
+
+    /*
+       Hide the feedback screen
+    */
+
+    document.querySelector(
+        ".feedback-app"
+    ).style.display = "none";
+
+
+    /*
+       Show custom Message popup
+    */
+
+    document.getElementById(
+        "successOverlay"
+    ).style.display = "flex";
+
+}
+
+
+/* =====================================================
+   CLOSE SUCCESS MESSAGE
+===================================================== */
+
+function closeSuccessMessage() {
+
+    document.getElementById(
+        "successOverlay"
+    ).style.display = "none";
+
+
+    /*
+       Return to Mess Pass background
+    */
+
+    document.querySelector(
+        ".feedback-app"
+    ).style.display = "block";
+
+
+    /*
+       Reset feedback
+    */
+
+    document.getElementById(
+        "negativeForm"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "fiveStarPage"
+    ).style.display = "none";
+
+
+    selectedRating = 0;
+
+
+    document.querySelectorAll(
+        ".star"
+    ).forEach(function(star) {
+
+        star.textContent = "☆";
+
+    });
+
+
+    document.querySelectorAll(
+        ".meal-button"
+    ).forEach(function(button) {
+
+        button.classList.remove("selected");
+
+    });
+
+
+    document.querySelectorAll(
+        ".feedback-checkbox input"
+    ).forEach(function(input) {
+
+        input.checked = false;
+
+        input.parentElement.classList.remove(
+            "checked"
+        );
+
+    });
+
+
+    document.querySelector(
+        ".remarks-box"
+    ).value = "";
+
+}
+
+
+/* =====================================================
+   CLOSE FEEDBACK
+===================================================== */
+
+function closeFeedback() {
+
+    document.querySelector(
+        ".feedback-app"
+    ).style.display = "none";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
