@@ -1,12 +1,453 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Mess Pass</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#262626">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mess Pass">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#000;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{min-height:100dvh}
+button,input{font:inherit}
+.app{width:100%;max-width:430px;min-height:100dvh;margin:0 auto;background:#fff;position:relative}
+.screen,.pass{width:100%;min-height:100dvh;background:#fff}
+.hidden{display:none!important}
+.header{height:52px;min-height:52px;background:#242424;color:#fff;display:flex;align-items:center;justify-content:center;position:relative;font-size:17px;font-weight:500;letter-spacing:0.2px;z-index:10}
+.header-grabber{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:42px;height:4px;border-radius:4px;background:#777}
+.header .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#aaa;font-size:28px;font-weight:300;line-height:1;cursor:pointer;padding:8px 12px;-webkit-tap-highlight-color:transparent}
+.header .back{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#fff;font-size:24px;font-weight:300;line-height:1;cursor:pointer;padding:8px 12px;-webkit-tap-highlight-color:transparent}
+.header .history{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#fff;font-size:14.5px;font-weight:400;line-height:1;cursor:pointer;padding:8px 6px;-webkit-tap-highlight-color:transparent}
+
+
+/* Profile setup */
+.form-wrap{height:calc(100dvh - 52px);overflow:auto;padding:16px;background:#fff;-webkit-overflow-scrolling:touch}
+.notice{background:#eaf8ef;border:1px solid #a9dfbd;color:#126b3b;border-radius:9px;padding:11px 13px;margin-bottom:14px;font-size:13px;line-height:1.35}
+.photo-preview{width:170px;height:170px;margin:0 auto 16px;border-radius:14px;overflow:hidden;background:#eee;border:1px solid #bbb}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.field{margin:0 0 15px}.field label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
+.field input,.field select{width:100%;height:50px;border:1px solid #aaa;border-radius:7px;background:#fff;color:#000!important;font-size:16px;padding:0 13px;outline:none}
+.accent-controls{display:flex;align-items:center;gap:10px}.accent-controls input[type="color"]{width:58px;height:50px;padding:4px;border:1px solid #aaa;border-radius:7px;background:#fff;cursor:pointer}.accent-controls #accentHex{flex:1;box-sizing:border-box;font-family:monospace;font-weight:600;text-transform:uppercase}
+.field input::file-selector-button{background:#666;color:#fff;border:0;padding:9px 11px;margin-right:9px;border-radius:4px}
+.save{width:100%;height:56px;border:0;border-radius:7px;background:#198f5b;color:#fff;font-size:17px;font-weight:800;margin-top:4px;cursor:pointer}.small{font-size:12px;color:#777;margin-top:6px;line-height:1.4}
+
+/* Coupon screen: exact colors, font sizes, and layout from reference device */
+.coupon{
+    background:#ffffff;
+    min-height:100dvh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    box-sizing:border-box;
+    padding-bottom:30px;
+}
+.coupon-shell{
+    background:#ffffff;
+    margin:0;
+    padding:14px 16px 20px;
+    border:none;
+    box-shadow:none;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+}
+.coupon-card{
+    margin:0 0 10px;
+    background:linear-gradient(to right, #fe8475 0%, #ffa976 50%, #fed07a 100%);
+    border-radius:16px;
+    padding:16px 18px 22px;
+    box-shadow:0 4px 14px rgba(254,132,117,.25);
+    box-sizing:border-box;
+}
+.coupon-photo{
+    width:102px;
+    height:106px;
+    border-radius:16px;
+    overflow:hidden;
+    margin:0 auto 10px;
+    background:#e0e0e0;
+}
+.coupon-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.nameid{
+    text-align:center;
+    font-size:15.5px;
+    font-weight:500;
+    line-height:1.25;
+    margin-bottom:18px;
+    color:#1a1a1a;
+    letter-spacing:0.1px;
+}
+.detail{
+    font-size:13.5px;
+    line-height:1.32;
+    margin:0 0 12px;
+    color:#262626;
+    text-align:left;
+    padding-left:4px;
+}
+.detail strong{
+    display:block;
+    margin-bottom:2px;
+    font-size:13.5px;
+    font-weight:600;
+    color:#1a1a1a;
+}
+.detail:last-child{margin-bottom:0}
+
+.instruction{
+    text-align:center;
+    font-size:19px;
+    font-weight:400;
+    line-height:1.35;
+    padding:16px 12px 14px;
+    color:#1a1a1a;
+}
+.rate{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    text-align:center;
+    margin:0 auto 18px;
+    border:1.5px solid #6c1524;
+    color:#6c1524;
+    background:#ffffff;
+    border-radius:7px;
+    padding:4.5px 16px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    width:max-content;
+    cursor:pointer;
+}
+.rate-star{
+    color:#e8a41e;
+    font-size:13.5px;
+    line-height:1;
+}
+.meal-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 16px;
+    padding:0 8px;
+    margin:0 auto;
+    width:100%;
+    max-width:350px;
+    box-sizing:border-box;
+}
+.meal{
+    height:48px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(to right, #fe8574 0%, #fed07a 100%);
+    box-shadow:0 4px 10px rgba(0,0,0,.22);
+    font-size:15px;
+    color:#1a1a1a;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .08s ease, filter .08s ease;
+}
+.meal:active{
+    transform:scale(0.98);
+    filter:brightness(0.96);
+}
+.meal span{
+    margin-left:6px;
+    font-size:16px;
+    font-weight:400;
+}
+.meal:nth-child(3){
+    grid-column:1 / 2;
+}
+
+/* Mess pass: intentionally scrollable, matching the larger original pass layout */
+.pass{background:#e7e7e7;min-height:100dvh;height:100dvh;overflow:auto;-webkit-overflow-scrolling:touch;padding-bottom:18px}
+.pass-card{background:#fff;margin:0 15px;border-radius:0 0 15px 15px;overflow:hidden;min-height:0;height:auto}
+.pass-top{padding:68px 15px 18px;position:relative}.badge{position:absolute;right:12px;top:10px;width:31px;height:31px;border-radius:50%;background:#b3b3b3;display:flex;align-items:center;justify-content:center;font-weight:800}
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;text-align:center}.frame{border:1px solid #000;padding:12px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.5)}.frame img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.pass-text{font-weight:800;font-size:15px;margin-top:8px;line-height:1.4;text-shadow:1px 2px 4px rgba(0,0,0,.35)}.pass-sub{font-weight:700;font-size:14px;margin-top:2px;line-height:1.4}.qr-frame{padding:10px}.qr-frame img{background:#fff}
+.info{text-align:center;font-size:14px;line-height:1.6;padding:22px 15px 8px}.date-row{display:flex;justify-content:space-between;padding:5px 35px;font-size:18px;font-weight:800;margin:15px 0 18px}.approved{font-family:inherit;text-align:center;color:#62c354;font-size:28px;font-weight:800;margin:18px 0 14px;text-shadow:0 0 10px rgba(98,195,84,.4)}
+.rate-pass{text-align:center}.rate-pass .rate{margin-bottom:25px}
+.video-strip{background:var(--accent,#062506);padding:25px}.video-box{background:#fff;width:100%;aspect-ratio:1;overflow:hidden;display:flex;align-items:center;justify-content:center}.video-box video{width:100%;height:100%;object-fit:contain;background:#fff}
+.footer{padding:25px;background:#fff}.gray{color:#9a9a9a;font-size:14px;font-weight:600;margin-top:22px}.value{color:#000;font-size:15px;font-weight:600;margin-top:6px;line-height:1.4}.verification-code { margin: 30px 0 4px; border: 2px solid #222; border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 17px; font-weight: 700; background: #fff; box-sizing: border-box; }.verification-code .label { font-weight: 700; }.verification-code .number { font-size: 18px; font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
+/* Camera scanner */
+.scanner{width:100%;height:100dvh;background:#101010;min-height:100dvh;color:#fff;position:relative;overflow:hidden}
+.scanner video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#101010}
+.camera-shade{position:absolute;inset:0;background:rgba(35,35,35,.34);pointer-events:none}
+.scan-frame{position:absolute;left:50%;top:50%;width:min(72vw,72vh);height:min(72vw,72vh);transform:translate(-50%,-50%);aspect-ratio:1/1;border:none;border-radius:0;box-shadow:0 0 0 9999px rgba(85,85,85,.42);pointer-events:none;z-index:1}
+.scan-line{position:absolute;left:50%;top:50%;width:min(72vw,72vh);height:2px;transform:translateX(-50%);background:#d21f45;box-shadow:0 0 12px #ff3d67;animation:lineBlink .72s steps(1,end) infinite;pointer-events:none;z-index:2}
+.dot{position:absolute;width:2px;height:2px;background:#ffd21a;border-radius:50%;opacity:0;pointer-events:none;box-shadow:0 0 4px rgba(255,210,26,.75);z-index:2}
+.scanner-title,.scanner-status,.camera-denied{display:none}
+@keyframes lineBlink{0%,38%{opacity:1}39%,100%{opacity:0}}
+
+
+/* Feedback modal */
+.feedback-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.48);
+    z-index:100;
+    display:none;
+    align-items:flex-end;
+}
+.feedback-backdrop.open{display:flex}
+.feedback-modal{
+    width:100%;
+    max-width:430px;
+    height:100dvh;
+    margin:0 auto;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+.feedback-header{
+    height:124px;
+    min-height:124px;
+    background:#303030;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    font-size:19px;
+    font-weight:500;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+.feedback-header .feedback-close{
+    position:absolute;
+    right:16px;
+    top:7px;
+    color:#fff;
+    font-size:34px;
+    line-height:1;
+    font-weight:300;
+    cursor:pointer;
+}
+.feedback-grabber{
+    position:absolute;
+    top:8px;
+    left:50%;
+    transform:translateX(-50%);
+    width:56px;
+    height:5px;
+    border-radius:8px;
+    background:#ddd;
+}
+.feedback-scroll{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:20px 0 36px;
+}
+.feedback-intro{
+    text-align:center;
+    padding:0 20px;
+}
+.feedback-title{
+    margin:0;
+    font-size:25px;
+    line-height:1.15;
+    font-weight:700;
+}
+.feedback-subtitle{
+    margin:20px 0 24px;
+    font-size:20px;
+    line-height:1.2;
+}
+.feedback-stars{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    margin:0 auto 32px;
+}
+.feedback-star{
+    border:0;
+    background:transparent;
+    padding:0;
+    width:42px;
+    height:48px;
+    font-size:43px;
+    line-height:1;
+    color:#f2b600;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+.feedback-star:focus{outline:none}
+.feedback-star.empty{color:#f2b600}
+.feedback-form{display:none;padding:0 20px}
+.feedback-form.show{display:block}
+.feedback-label{
+    font-size:18px;
+    margin:4px 0 20px;
+}
+.feedback-section{
+    margin:0 0 28px;
+}
+.feedback-section-title{
+    text-align:center;
+    text-decoration:underline;
+    font-size:18px;
+    font-weight:400;
+    margin:0 0 18px;
+}
+.feedback-options{
+    background:#fff;
+    border:1px solid #f0f0f0;
+}
+.feedback-option{
+    min-height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:0 16px;
+    border-bottom:1px solid #ddd;
+    font-size:17px;
+}
+.feedback-option:last-child{border-bottom:0}
+.feedback-option input{
+    appearance:none;
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:2px solid #888;
+    border-radius:2px;
+    background:#fff;
+    flex:0 0 auto;
+    position:relative;
+}
+.feedback-option input:checked{
+    background:#ff7a22;
+    border-color:#ff7a22;
+}
+.feedback-option input:checked::after{
+    content:'✓';
+    position:absolute;
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    left:2px;
+    top:-1px;
+}
+.feedback-meals{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+.feedback-meal{
+    min-width:0;
+    height:50px;
+    border:2px solid #999;
+    border-radius:16px;
+    background:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+.feedback-meal{
+    transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.feedback-meal.selected{
+    border-color:#ff7a22;
+    transform:scale(1.06);
+    box-shadow:0 0 14px 3px rgba(255,122,34,.48);
+    background:#fffaf6;
+}
+.feedback-remarks{
+    width:100%;
+    min-height:76px;
+    resize:none;
+    border:1px solid #bbb;
+    border-radius:3px;
+    padding:10px;
+    font-size:16px;
+    outline:none;
+}
+.feedback-submit{
+    display:block;
+    width:285px;
+    max-width:90%;
+    height:58px;
+    margin:24px auto 0;
+    border:0;
+    border-radius:8px;
+    background:linear-gradient(105deg,#ff8075,#ffd477);
+    box-shadow:0 5px 8px #888;
+    font-size:21px;
+    color:#111;
+    cursor:pointer;
+}
+.feedback-message{
+    position:fixed;
+    inset:0;
+    z-index:120;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(0,0,0,.28);
+}
+.feedback-message.show{display:flex}
+.feedback-message-box{
+    width:300px;
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+    text-align:center;
+}
+.feedback-message-box h3{
+    margin:20px 12px 8px;
+    font-size:18px;
+}
+.feedback-message-box p{
+    margin:0 18px 20px;
+    font-size:14px;
+    line-height:1.45;
+}
+.feedback-message-box button{
+    width:100%;
+    height:48px;
+    border:0;
+    border-top:1px solid #ddd;
+    background:#fff;
+    color:#ff7a22;
+    font-size:18px;
+    cursor:pointer;
+}
+@media(max-width:360px){
+    .feedback-stars{gap:10px}
+    .feedback-star{width:38px;font-size:39px}
+    .feedback-title{font-size:23px}
+    .feedback-subtitle{font-size:18px}
+    .feedback-meals{gap:8px}
+    .feedback-meal{font-size:14px}
+}
+
+
+/* ===== Code 2: Meal-approved pass interface (merged without redesign) ===== */
+
   :root{
     --card-max:500px;
     --card-radius:18px;
@@ -16,7 +457,7 @@
   }
 
   *{box-sizing:border-box}
-  body{
+  body.pass-view{
     margin:0;
     font-family: 'Roboto', sans-serif;
     background:#f3f3f0;
@@ -387,143 +828,383 @@
     font-weight: 600;
     cursor: pointer;
   }
+
 </style>
 </head>
 <body>
-
-<div class="topbar">
-    <div class="handle"></div>
-    <span>Mess Pass</span>
-    <button class="close-btn" onclick="history.back()">✕</button>
-</div>
-
-<div class="wrap" style="flex-direction: column; align-items: center;">
-  <article class="card">
-
-    <div class="timer" id="timerEl">30</div>
-
-    <div class="content">
-      <div class="profile-row">
-
-  <div>
-    <div class="avatar">
-      <img src="profile.jpg" class="avatar-img">
-    </div>
-    <div class="left-col">
-      <div class="sid">12311286</div>
-      <div class="line">Borra Ajay Kumar</div>
-    </div>
-  </div>
-
-  <div>
-    <div class="qr-box">
-      <img src="qr.png" class="qr-img">
-    </div>
-    <div class="right-col">
-      <div class="meal-title" id="mealTitle"></div>
-      <div class="line">Mess BH-4</div>
-    </div>
-  </div>
-
-</div>
-
-      <div class="course">
-        P132: B.Tech. (Computer Science and Engineering)(2023)
-      </div>
-      <div class="assigned-mess">
-        Your Assigned Mess - Mess BH-4
-      </div>
-
-      <div class="dt-row">
-        <div class="date" id="dateText">Nov 20, 2025</div>
-        <div class="time" id="timeText">1:24 AM</div>
-      </div>
-
-      <div class="approved">Meal Approved</div>
-
-      <div class="rate-wrap">                                   
-        <button class="rate-btn" onclick="window.location.href='feedback.html'">⭐ RATE US</button>
-      </div>
-
-    </div>
-
-    <div class="brown-box">
-      <div class="brown-inner">
-        <video src="video.mp4" autoplay muted playsinline style="
-            width:94%;
-            height:94%;
-            object-fit:contain;
-            display:block;
-            margin-left:14px;
-            margin-top:10px; 
-        "></video>
-      </div>
-    </div>
-
-  </article>
-
-  <!-- Details card with reduced top margin gap -->
-  <div class="details-card">
-      <div class="pass-detail-item">
-          <div class="pass-detail-label">Father's Name</div>
-          <div class="pass-detail-value" id="valFather">Mahesh KC (9483746197)</div>
-      </div>
-
-      <div class="pass-detail-item">
-          <div class="pass-detail-label">Mother's Name</div>
-          <div class="pass-detail-value" id="valMother">Reetha()</div>
-      </div>
-
-      <div class="pass-detail-item">
-          <div class="pass-detail-label">Program</div>
-          <div class="pass-detail-value" id="valProgram">P132:B.Tech. (Computer Science and Engineering)(2022)</div>
-      </div>
-
-      <div class="pass-detail-item">
-          <div class="pass-detail-label">Hostel</div>
-          <div class="pass-detail-value" id="valHostel">Boys Hostel-04-B511-Bed C Mess</div>
-      </div>
-
-      <!-- Secret Trigger: Tap this box 5 times quickly to open editor -->
-      <div class="verification-box" id="secretTrigger">
-          <span class="verification-label">Verification Code</span>
-          <span class="verification-code" id="verificationCode"></span>
-      </div>
-  </div>
-</div>
-
-<!-- Hidden Secret Edit Popup -->
-<div class="secret-modal" id="secretModal">
-    <div class="secret-panel">
-        <h3>Edit Details</h3>
-        <div class="input-group">
-            <label>Father's Name</label>
-            <input type="text" id="inFather">
-        </div>
-        <div class="input-group">
-            <label>Mother's Name</label>
-            <input type="text" id="inMother">
-        </div>
-        <div class="input-group">
-            <label>Program</label>
-            <input type="text" id="inProgram">
-        </div>
-        <div class="input-group">
-            <label>Hostel</label>
-            <input type="text" id="inHostel">
-        </div>
-        <div class="input-group">
-            <label>Verification Code (leave blank for random)</label>
-            <input type="text" id="inCode" maxlength="8">
-        </div>
-        <div class="btn-row">
-            <button class="btn-cancel" id="cancelBtn">Cancel</button>
-            <button class="btn-save" id="saveBtn">Save</button>
-        </div>
-    </div>
-</div>
-
+<div class="app" id="app"></div>
 <script>
+const KEY='messPassProfileV12';
+const DEFAULT_PHOTO='student.jpg';
+const DEFAULT_PROFILE={name:'Ayush M',id:'12434322',mess:'Mess BH-4',program:'P132:B.Tech. (Computer Science and Engineering)(2022)',father:'Mahesh KC (9483746197)',mother:'Reetha(7013679290)',hostel:'Boys Hostel-04-B511-Bed C Mess',accent:'#062506',photo:DEFAULT_PHOTO};
+let profile=null, selectedMeal='Lunch', activeStream=null, passTimer=null, passReturnTimer=null;
+const app=document.getElementById('app');
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function getProfile(){try{const saved=localStorage.getItem(KEY);if(saved)return JSON.parse(saved);const old=localStorage.getItem('messPassProfileV10');if(old){const parsed=JSON.parse(old);const migrated={...DEFAULT_PROFILE,...parsed,photo:DEFAULT_PHOTO};saveProfile(migrated);return migrated}}catch(e){}return {...DEFAULT_PROFILE}}
+function saveProfile(p){localStorage.setItem(KEY,JSON.stringify(p));profile=p}
+async function enterFullscreen(){}
+async function exitFullscreen(){}
+function showForm(){
+  document.body.classList.remove('pass-view');
+ app.innerHTML=`<div class="screen"><div class="header">${profile?'<span class="back" onclick="showCoupon()">←</span>':''}Fill Profile</div><div class="form-wrap">
+ <div class="notice">✓ Fill this once. Your profile is saved on this device and reused next time.</div>
+ <div class="photo-preview"><img id="photoPreview" src="${profile?.photo||DEFAULT_PHOTO}" onerror="this.style.display='none'"></div>
+ <div class="field"><label>Profile Photo</label><input id="photo" type="file" accept="image/*"></div>
+ ${field('name','Full Name',profile?.name||'Ayush M')}${field('id','ID Number',profile?.id||'12434322')}${field('mess','Mess Assigned',profile?.mess||'Mess BH-4')}${field('program','Program',profile?.program||'P132:B.Tech. (Computer Science and Engineering)(2022)')}${field('father',"Father's Name",profile?.father||'Mahesh KC (9483746197)')}${field('mother',"Mother's Name",profile?.mother||'Reetha(7013679290)')}${field('hostel','Hostel',profile?.hostel||'Boys Hostel-04-B511-Bed C Mess')}
+ <div class="field accent-field"><label>Pass Accent Color</label><div class="accent-controls">
+   <input id="accent" type="color" value="${profile?.accent||'#062506'}" aria-label="Choose pass accent color">
+   <input id="accentHex" type="text" value="${profile?.accent||'#062506'}" maxlength="7" spellcheck="false" inputmode="text" aria-label="Pass accent HEX color">
+ </div><div class="small">Choose a color on your phone or enter the HEX value.</div></div>
+ <button class="save" id="save">💾 SAVE PROFILE</button></div></div>`;
+ const photo=document.getElementById('photo'); photo.addEventListener('change',e=>{const f=e.target.files[0];if(f){const r=new FileReader();r.onload=()=>{document.getElementById('photoPreview').src=r.result;document.getElementById('photoPreview').style.display='block'};r.readAsDataURL(f)}});
+ const accent=document.getElementById('accent');
+ const accentHex=document.getElementById('accentHex');
+ const normalizeHex=value=>{let x=String(value||'').trim();if(!x.startsWith('#'))x='#'+x;if(/^#[0-9a-fA-F]{6}$/.test(x))return x.toLowerCase();return null};
+ accent.addEventListener('input',()=>{accentHex.value=accent.value.toLowerCase()});
+ accentHex.addEventListener('input',()=>{const x=normalizeHex(accentHex.value);if(x)accent.value=x});
+ accentHex.addEventListener('blur',()=>{const x=normalizeHex(accentHex.value);accentHex.value=x||accent.value.toLowerCase()});
+ document.getElementById('save').onclick=()=>{const chosen=normalizeHex(accentHex.value)||accent.value||'#062506';const p={name:v('name'),id:v('id'),mess:v('mess'),program:v('program'),father:v('father'),mother:v('mother'),hostel:v('hostel'),accent:chosen,photo:document.getElementById('photoPreview').src||DEFAULT_PHOTO};saveProfile(p);showCoupon()};
+}
+function field(id,label,val){return `<div class="field"><label>${label}</label><input id="${id}" type="text" value="${esc(val)}"></div>`}
+function v(id){return document.getElementById(id).value}
+
+function closeFeedback(){
+    const modal=document.getElementById('feedbackModal');
+    if(modal)modal.classList.remove('open');
+    const msg=document.getElementById('feedbackMessage');
+    if(msg)msg.classList.remove('show');
+}
+function openFeedback(){
+    const modal=document.getElementById('feedbackModal');
+    if(!modal)return;
+    modal.classList.add('open');
+    document.getElementById('feedbackForm').classList.remove('show');
+    document.getElementById('feedbackScroll').scrollTop=0;
+    document.querySelectorAll('.feedback-star').forEach(star=>{
+        star.textContent='☆';
+        star.classList.add('empty');
+    });
+}
+function selectFeedbackRating(rating){
+    document.querySelectorAll('.feedback-star').forEach(star=>{
+        const n=Number(star.dataset.rating);
+        star.textContent=n<=rating?'★':'☆';
+        star.classList.toggle('empty',n>rating);
+    });
+    const form=document.getElementById('feedbackForm');
+    form.classList.add('show');
+    setTimeout(()=>{
+        document.getElementById('feedbackScroll').scrollTo({
+            top:document.querySelector('.feedback-form').offsetTop-8,
+            behavior:'smooth'
+        });
+    },30);
+}
+function submitFeedback(){
+    const msg=document.getElementById('feedbackMessage');
+    if(msg)msg.classList.add('show');
+}
+function getFeedbackModalMarkup(){
+  return `<div class="feedback-backdrop" id="feedbackModal">
+    <div class="feedback-modal">
+      <div class="feedback-header"><div class="feedback-grabber"></div>Feedback<button class="feedback-close" id="feedbackClose" type="button">×</button></div>
+      <div class="feedback-scroll" id="feedbackScroll">
+        <div class="feedback-intro">
+          <h2 class="feedback-title">Mess Feedback</h2>
+          <div class="feedback-subtitle">Tell us how we did!</div>
+          <div class="feedback-stars" id="feedbackStars">
+            <button class="feedback-star" data-rating="1" type="button">☆</button>
+            <button class="feedback-star" data-rating="2" type="button">☆</button>
+            <button class="feedback-star" data-rating="3" type="button">☆</button>
+            <button class="feedback-star" data-rating="4" type="button">☆</button>
+            <button class="feedback-star" data-rating="5" type="button">☆</button>
+          </div>
+        </div>
+        <div class="feedback-form" id="feedbackForm">
+          <div class="feedback-label">Tap to select meal type</div>
+          <div class="feedback-section">
+            <div class="feedback-meals" id="feedbackMeals">
+              <button class="feedback-meal" data-meal="Breakfast" type="button">Breakfast</button>
+              <button class="feedback-meal" data-meal="Lunch" type="button">Lunch</button>
+              <button class="feedback-meal" data-meal="Tea" type="button">Tea</button>
+              <button class="feedback-meal" data-meal="Dinner" type="button">Dinner</button>
+            </div>
+          </div>
+          <div class="feedback-section">
+            <h3 class="feedback-section-title">Service/Staff</h3>
+            <div class="feedback-options">
+              <label class="feedback-option"><span>Food served late</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Staff not polite</span><input type="checkbox"></label>
+            </div>
+          </div>
+          <div class="feedback-section">
+            <h3 class="feedback-section-title">Quantity</h3>
+            <div class="feedback-options">
+              <label class="feedback-option"><span>Refills not available</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Less food</span><input type="checkbox"></label>
+            </div>
+          </div>
+          <div class="feedback-section">
+            <h3 class="feedback-section-title">Hygiene</h3>
+            <div class="feedback-options">
+              <label class="feedback-option"><span>Staff not hygienic</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Utensils dirty</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Mess not clean</span><input type="checkbox"></label>
+            </div>
+          </div>
+          <div class="feedback-section">
+            <h3 class="feedback-section-title">Food Quality</h3>
+            <div class="feedback-options">
+              <label class="feedback-option"><span>Not fresh</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Undercooked / overcooked</span><input type="checkbox"></label>
+              <label class="feedback-option"><span>Too oily/greasy</span><input type="checkbox"></label>
+            </div>
+          </div>
+          <div class="feedback-section">
+            <h3 class="feedback-section-title">Remarks (If Any)</h3>
+            <textarea class="feedback-remarks" id="feedbackRemarks"></textarea>
+          </div>
+          <button class="feedback-submit" id="feedbackSubmit" type="button">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="feedback-message" id="feedbackMessage">
+    <div class="feedback-message-box">
+      <h3>Message</h3>
+      <p>Thank you for your feedback! Your input<br>helps improve the mess service.</p>
+      <button id="feedbackOk" type="button">OK</button>
+    </div>
+  </div>`;
+}
+function attachFeedbackHandlers(){
+  const closeBtn = document.getElementById('feedbackClose');
+  if(closeBtn) closeBtn.onclick = closeFeedback;
+  document.querySelectorAll('.feedback-star').forEach(star=>star.onclick=()=>selectFeedbackRating(Number(star.dataset.rating)));
+  document.querySelectorAll('.feedback-meal').forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll('.feedback-meal').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+  });
+  const subBtn = document.getElementById('feedbackSubmit');
+  if(subBtn) subBtn.onclick = submitFeedback;
+  const okBtn = document.getElementById('feedbackOk');
+  if(okBtn) okBtn.onclick = () => {
+    const msg = document.getElementById('feedbackMessage');
+    if(msg) msg.classList.remove('show');
+    closeFeedback();
+  };
+}
+async function showCoupon(){
+  document.body.classList.remove('pass-view');
+ if(passTimer){clearInterval(passTimer);passTimer=null}
+ if(passReturnTimer){clearTimeout(passReturnTimer);passReturnTimer=null}
+ profile=getProfile();if(!profile){showForm();return}
+ app.innerHTML=`<div class="coupon"><div class="header"><span class="back" onclick="showCoupon()">←</span>Mess Coupon<span class="history">Meal History</span></div><div class="coupon-shell">
+ <div class="coupon-card" id="profilePhotoAccess"><div class="coupon-photo"><img src="${profile.photo}" alt="Profile"></div><div class="nameid">${esc(profile.name)} ${esc(profile.id)}</div><div class="detail"><strong>Father's Name</strong>${esc(profile.father)}</div><div class="detail"><strong>Mother's Name</strong>${esc(profile.mother)}</div><div class="detail"><strong>Program Name</strong>${esc(profile.program)}</div><div class="detail"><strong>Hostel</strong>${esc(profile.hostel)}</div></div>
+ <div class="instruction">Tap on the meal name to scan<br>and avail food.</div><button class="rate" id="rateUsBtn" type="button"><span class="rate-star">★</span> RATE US</button>
+ <div class="meal-grid"><button class="meal" data-meal="Breakfast">BreakFast <span>→</span></button><button class="meal" data-meal="Lunch">Lunch <span>→</span></button><button class="meal" data-meal="Dinner">Dinner <span>→</span></button></div>
+ ${getFeedbackModalMarkup()}
+ </div></div>`;
+ document.querySelectorAll('.meal').forEach(b=>b.onclick=async()=>{selectedMeal=b.dataset.meal;try{const a=document.getElementById('scanBeep');if(a){a.load();const p=a.play();if(p)p.then(()=>{a.pause();a.currentTime=0}).catch(()=>{})}}catch(e){}showScanner()});
+ let profileTapCount = 0, profileTapTimer = null;
+ const profileCard = document.getElementById('profilePhotoAccess');
+ if (profileCard) {
+  profileCard.ondblclick = null;
+  profileCard.onclick = () => {
+   profileTapCount++;
+   if (profileTapTimer) clearTimeout(profileTapTimer);
+   if (profileTapCount >= 5) {
+    profileTapCount = 0;
+    showForm();
+   } else {
+    profileTapTimer = setTimeout(() => { profileTapCount = 0; }, 2200);
+   }
+  };
+ }
+ const rateBtn = document.getElementById('rateUsBtn');
+ if (rateBtn) rateBtn.onclick = openFeedback;
+ attachFeedbackHandlers();
+}
+async function showScanner(){
+  document.body.classList.remove('pass-view');
+ if(activeStream){activeStream.getTracks().forEach(t=>t.stop());activeStream=null}
+
+ const dotCount=48;
+ const dotsMarkup=Array.from({length:dotCount},()=>'<span class="dot"></span>').join('');
+
+ app.innerHTML=`<div class="scanner">
+   <video id="camera" autoplay muted playsinline></video>
+   <div class="camera-shade"></div>
+   <div class="scan-frame"></div>
+   <div class="scan-line"></div>
+   <audio id="scanBeep" src="./sounds/beep_sound_trimmed.mp3" preload="auto"></audio>
+   ${dotsMarkup}
+ </div>`;
+
+ const video=document.getElementById('camera');
+ const dots=[...document.querySelectorAll('.dot')];
+ let particleTimer=null;
+ let running=true;
+
+ const spawnDot=(dot)=>{
+   const left=14+Math.random()*72;
+   const top=30+Math.random()*40;
+   const size=Math.random()<0.82 ? (Math.random()*0.7+1.1) : (Math.random()*1.2+1.8);
+
+   dot.style.left=left+'%';
+   dot.style.top=top+'%';
+   dot.style.width=size+'px';
+   dot.style.height=size+'px';
+   dot.style.opacity=(Math.random()*0.35+0.65).toFixed(2);
+   dot.dataset.until=String(performance.now()+(Math.random()*420+120));
+ };
+
+ const hideDot=(dot)=>{
+   dot.style.opacity='0';
+   dot.dataset.until='0';
+ };
+
+ // Start with a genuinely random population: sometimes almost empty,
+ // sometimes a small burst of many points.
+ const initialCount=Math.floor(Math.random()*16);
+ const shuffled=[...dots].sort(()=>Math.random()-.5);
+ shuffled.slice(0,initialCount).forEach(spawnDot);
+
+ particleTimer=setInterval(()=>{
+   const now=performance.now();
+
+   dots.forEach(dot=>{
+     const until=Number(dot.dataset.until||0);
+
+     if(until && now>=until){
+       hideDot(dot);
+     }
+
+     if(Number(dot.dataset.until||0)===0 && Math.random()<0.12){
+       spawnDot(dot);
+     }
+   });
+
+   // Occasional burst or quiet moment, so the density never feels fixed.
+   if(Math.random()<0.22){
+     const burst=Math.floor(Math.random()*5);
+     const hidden=dots.filter(d=>Number(d.dataset.until||0)===0);
+     hidden.sort(()=>Math.random()-.5).slice(0,burst).forEach(spawnDot);
+   }
+ },90);
+
+ try{
+   activeStream=await navigator.mediaDevices.getUserMedia({
+     video:{
+       facingMode:{ideal:'environment'},
+       width:{ideal:1280},
+       height:{ideal:720}
+     },
+     audio:false
+   });
+   video.srcObject=activeStream;
+ }catch(err){
+   // Keep the scanner animation completely clean even if camera permission fails.
+ }
+
+ const scanBeep=document.getElementById('scanBeep');
+ setTimeout(()=>{
+   if(scanBeep){
+     scanBeep.currentTime=0;
+     scanBeep.play().catch(()=>{});
+   }
+ },3500);
+
+ setTimeout(()=>{
+   running=false;
+   if(particleTimer)clearInterval(particleTimer);
+   dots.forEach(hideDot);
+   showPass();
+ },4500);
+}
+
+function stopCamera(){if(activeStream){activeStream.getTracks().forEach(t=>t.stop());activeStream=null}}
+function generateQRDataURL(text){
+  try{
+    const size=180, margin=10, modules=29;
+    const c=document.createElement('canvas');
+    c.width=size; c.height=size;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#ffffff';
+    ctx.fillRect(0,0,size,size);
+    ctx.fillStyle='#000000';
+    const cellSize=(size-2*margin)/modules;
+    const drawFinder=(startX,startY)=>{
+      ctx.fillStyle='#000000';
+      ctx.fillRect(margin+startX*cellSize, margin+startY*cellSize, 7*cellSize, 7*cellSize);
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(margin+(startX+1)*cellSize, margin+(startY+1)*cellSize, 5*cellSize, 5*cellSize);
+      ctx.fillStyle='#000000';
+      ctx.fillRect(margin+(startX+2)*cellSize, margin+(startY+2)*cellSize, 3*cellSize, 3*cellSize);
+    };
+    drawFinder(0,0);
+    drawFinder(modules-7,0);
+    drawFinder(0,modules-7);
+    const drawAlignment=(cx,cy)=>{
+      ctx.fillStyle='#000000';
+      ctx.fillRect(margin+(cx-2)*cellSize, margin+(cy-2)*cellSize, 5*cellSize, 5*cellSize);
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(margin+(cx-1)*cellSize, margin+(cy-1)*cellSize, 3*cellSize, 3*cellSize);
+      ctx.fillStyle='#000000';
+      ctx.fillRect(margin+cx*cellSize, margin+cy*cellSize, cellSize, cellSize);
+    };
+    drawAlignment(20,20);
+    for(let i=8; i<modules-8; i++){
+      if(i%2===0){
+        ctx.fillRect(margin+i*cellSize, margin+6*cellSize, cellSize, cellSize);
+        ctx.fillRect(margin+6*cellSize, margin+i*cellSize, cellSize, cellSize);
+      }
+    }
+    ctx.fillRect(margin+8*cellSize, margin+21*cellSize, cellSize, cellSize);
+    let seed=0;
+    const str=String(text||'');
+    for(let i=0; i<str.length; i++){
+      seed=(seed*31+str.charCodeAt(i))&0xffffffff;
+    }
+    for(let r=0; r<modules; r++){
+      for(let col=0; col<modules; col++){
+        if((r<=7 && col<=7) || (r<=7 && col>=modules-8) || (r>=modules-8 && col<=7)) continue;
+        if(r===6 || col===6) continue;
+        if(r>=18 && r<=22 && col>=18 && col<=22) continue;
+        if(r===21 && col===8) continue;
+        seed=(seed*1664525+1013904223)&0xffffffff;
+        if((seed>>>16)%3 !== 0){
+          ctx.fillRect(margin+col*cellSize, margin+r*cellSize, cellSize, cellSize);
+        }
+      }
+    }
+    return c.toDataURL('image/png');
+  }catch(e){
+    return '';
+  }
+}
+function makeQR(){
+  try{
+    const cached=localStorage.getItem('qrCache_'+profile.id);
+    if(cached) return cached;
+    const localQR=generateQRDataURL(profile.id+' '+profile.name+' '+(profile.mess||''));
+    if(localQR){
+      try{localStorage.setItem('qrCache_'+profile.id,localQR);}catch(e){}
+      return localQR;
+    }
+  }catch(e){}
+  const data=encodeURIComponent(`${profile.id}-${profile.name} - MESS PASS VERIFICATION SYSTEM ACCREDITED`);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${data}&ecc=H&margin=10`;
+}
+function cacheQR(img){}
+function handleQRError(img){
+  try{
+    const localQR=generateQRDataURL(profile.id+' '+profile.name+' '+(profile.mess||''));
+    if(localQR) img.src=localQR;
+  }catch(e){}
+}
+
+function initializeSecondPassCode(){
 let sec = 30;
 const timerEl = document.getElementById("timerEl");
 timerEl.textContent = sec;
@@ -695,7 +1376,165 @@ document.getElementById('saveBtn').addEventListener('click', () => {
     loadValues();
     secretModal.classList.remove('open');
 });
-</script>
+}
 
-</body>
-</html>
+function showPass(){
+  stopCamera();
+  if(passTimer){clearInterval(passTimer);passTimer=null}
+  if(passReturnTimer){clearTimeout(passReturnTimer);passReturnTimer=null}
+  document.body.classList.add('pass-view');
+  app.innerHTML=`<div class="second-pass-view">
+<div class="topbar">
+    <div class="handle"></div>
+    <span>Mess Pass</span>
+    <button class="close-btn" onclick="history.back()">✕</button>
+</div>
+
+<div class="wrap" style="flex-direction: column; align-items: center;">
+  <article class="card">
+
+    <div class="timer" id="timerEl">30</div>
+
+    <div class="content">
+      <div class="profile-row">
+
+  <div>
+    <div class="avatar">
+      <img src="profile.jpg" class="avatar-img">
+    </div>
+    <div class="left-col">
+      <div class="sid">12311396</div>
+      <div class="line">Chavala John Victor</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="qr-box">
+      <img src="qr.png" class="qr-img">
+    </div>
+    <div class="right-col">
+      <div class="meal-title" id="mealTitle"></div>
+      <div class="line">Mess BH-4</div>
+    </div>
+  </div>
+
+</div>
+
+      <div class="course">
+        P132: B.Tech. (Computer Science and Engineering)(2023)
+      </div>
+      <div class="assigned-mess">
+        Your Assigned Mess - Mess BH-4
+      </div>
+
+      <div class="dt-row">
+        <div class="date" id="dateText">Nov 20, 2025</div>
+        <div class="time" id="timeText">1:24 AM</div>
+      </div>
+
+      <div class="approved">Meal Approved</div>
+
+      <div class="rate-wrap">                                   
+        <button class="rate-btn" onclick="window.location.href='feedback.html'">⭐ RATE US</button>
+      </div>
+
+    </div>
+
+    <div class="brown-box">
+      <div class="brown-inner">
+        <video src="video.mp4" autoplay muted playsinline style="
+            width:94%;
+            height:94%;
+            object-fit:contain;
+            display:block;
+            margin-left:14px;
+            margin-top:10px; 
+        "></video>
+      </div>
+    </div>
+
+  </article>
+
+  <!-- Details card with reduced top margin gap -->
+  <div class="details-card">
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Father's Name</div>
+          <div class="pass-detail-value" id="valFather">Mahesh KC (9483746197)</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Mother's Name</div>
+          <div class="pass-detail-value" id="valMother">Reetha()</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Program</div>
+          <div class="pass-detail-value" id="valProgram">P132:B.Tech. (Computer Science and Engineering)(2022)</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Hostel</div>
+          <div class="pass-detail-value" id="valHostel">Boys Hostel-04-B511-Bed C Mess</div>
+      </div>
+
+      <!-- Secret Trigger: Tap this box 5 times quickly to open editor -->
+      <div class="verification-box" id="secretTrigger">
+          <span class="verification-label">Verification Code</span>
+          <span class="verification-code" id="verificationCode"></span>
+      </div>
+  </div>
+</div>
+
+<!-- Hidden Secret Edit Popup -->
+<div class="secret-modal" id="secretModal">
+    <div class="secret-panel">
+        <h3>Edit Details</h3>
+        <div class="input-group">
+            <label>Father's Name</label>
+            <input type="text" id="inFather">
+        </div>
+        <div class="input-group">
+            <label>Mother's Name</label>
+            <input type="text" id="inMother">
+        </div>
+        <div class="input-group">
+            <label>Program</label>
+            <input type="text" id="inProgram">
+        </div>
+        <div class="input-group">
+            <label>Hostel</label>
+            <input type="text" id="inHostel">
+        </div>
+        <div class="input-group">
+            <label>Verification Code (leave blank for random)</label>
+            <input type="text" id="inCode" maxlength="8">
+        </div>
+        <div class="btn-row">
+            <button class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button class="btn-save" id="saveBtn">Save</button>
+        </div>
+    </div>
+</div>
+</div>`;
+  initializeSecondPassCode();
+}
+profile=getProfile();if(profile)showCoupon();else showForm();
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js?v=31').then(reg=>{
+      reg.update();
+    }).catch(()=>{});
+  });
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    window.location.reload();
+  });
+}
+window.addEventListener('pagehide',stopCamera);
+
+
+</script>
+</body></html>
