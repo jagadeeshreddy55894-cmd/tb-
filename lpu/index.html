@@ -1,502 +1,701 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Mess Coupon</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Mess Pass</title>
+<style>
+  :root{
+    --card-max:500px;
+    --card-radius:18px;
+    --green: #26a42b;
+    --brown: #7a2d1e;
+    --text:#111;
+  }
 
-        html, body {
-            min-height: 100%;
-            width: 100%;
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #ffffff;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: 'Roboto', sans-serif;
+    background:#f3f3f0;
+    color:var(--text);
+  }
 
-        @media (min-width: 480px) {
-            body {
-                background-color: #181818;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px 0;
-            }
-        }
+  .topbar{
+    width:100%;
+    height:68px;
+    background:#333;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:sticky;
+    top:0;
+    z-index:30;
+  }
+  .topbar .handle{
+    width:44px;height:6px;border-radius:4px;background:#d6d6d6;
+    position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  }
+  .topbar span{font-size:17px;font-weight:400}
 
-        /* Mobile App Container */
-        .app-screen {
-            width: 100%;
-            max-width: 412px;
-            min-height: 100dvh;
-            background-color: #f3f3f3;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+  .close-btn{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    background:transparent;
+    border:none;
+    color:#ffffff;
+    font-size:22px;
+    font-weight:400;
+    padding:4px 6px;
+  }
 
-        @media (min-width: 480px) {
-            .app-screen {
-                min-height: 820px;
-                border-radius: 24px;
-                overflow: hidden;
-                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-            }
-        }
+  .wrap{display:flex;justify-content:center;padding:18px 8px 40px;}
+  .card{
+    width:97%;
+    max-width:var(--card-max);
+    background:#f2f2f2;
+    border-radius:var(--card-radius);
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.6),
+        0 8px 18px rgba(0,0,0,0.12);
+    position:relative;
+  }
 
-        /* Sticky Compact Top Navigation Header */
-        .top-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            min-height: 52px;
-            padding: env(safe-area-inset-top, 0px) 14px 0 14px;
-            background-color: #2b2b2b;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            user-select: none;
-        }
+  .timer{
+    position:absolute;
+    top:-12px;
+    right:-10px;
+    min-width:45px;
+    height:40px;
+    padding:0 10px;
+    border-radius:18px;
+    background:#999;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:400;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.2);
+    box-shadow:0 8px 18px rgba(0,0,0,0.12), inset 0 2px 6px rgba(255,255,255,0.6);
+  }
 
-        .back-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 4px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+  .content{padding:18px 18px;}
 
-        .header-title {
-            font-size: 16px;
-            font-weight: 500;
-            letter-spacing: 0.1px;
-            color: #ffffff;
-            white-space: nowrap;
-            margin-left: 28px;
-        }
+  .profile-row{
+    display:flex;
+    gap:24px;   
+    align-items:center;
+    margin-top:12px;
+  }
 
-        .history-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-            padding: 6px 2px;
-            flex-shrink: 0;
-        }
+  .avatar{
+    width:145px;
+    height:148px;
+    border-radius:0;
+    overflow:hidden;
+    box-shadow:0 12px 26px rgba(0,0,0,0.18);
+  }
 
-        /* Upper Light Gray Wrapper Around Floating Card */
-        .card-wrapper {
-            background-color: #f3f3f3;
-            padding: 12px 14px 12px 14px;
-            flex-shrink: 0;
-        }
+  .avatar-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position: center 10%;
+  }
 
-        /* Floating Student Profile Gradient Card (Deeper coral-red left -> lighter pastel yellow right) */
-        .profile-card {
-            background: linear-gradient(90deg, #f27069 0%, #f79573 48%, #fdd778 100%);
-            border-radius: 9px;
-            padding: 17px 18px 19px 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #231f20;
-        }
+  .qr-box{
+    width:148px;
+    height:138px;
+    background:#fff;
+    border:1px solid #333;   
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:6px;
+    overflow:hidden;         
+    box-shadow:0 12px 26px rgba(0,0,0,0.18);
+  }
 
-        /* Student Photo Container */
-        .photo-box {
-            width: 114px;
-            height: 120px;
-            border-radius: 11px;
-            overflow: hidden;
-            background-color: #e6e7e9;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  .meal-title{
+    font-size:16px;
+    font-weight:500;
+    color:#000;
+    margin-top:1px;
+    margin-bottom:6px;
+    margin-left:1px;
+    line-height:1.8;
+    letter-spacing:-0.9px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.9);
+  }
 
-        .photo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+  .sid, .line {
+    font-size:14px;
+    font-weight:500;
+    color:#000;
+    margin-bottom:12px;
+    margin-left:3px;
+    line-height:0.9;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.9);
+  }
 
-        /* Student Name + Registration ID */
-        .student-name {
-            margin-top: 9px;
-            margin-bottom: 17px;
-            font-size: 14.5px;
-            font-weight: 600;
-            color: #231f20;
-            text-align: center;
-            letter-spacing: -0.1px;
-        }
+  .course{
+    font-size:16px;
+    font-weight:400;
+    margin-top:24px;
+    margin-bottom:48px;
+    text-align:center;
+    margin-left:0px;
+    line-height:1.4;
+    letter-spacing:0.1px; 
+    color:#222;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+  }
 
-        /* Student Info Rows */
-        .details-group {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10.5px;
-            padding-left: 2px;
-            text-align: left;
-        }
+  .dt-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:32px;
+    margin-bottom:38px;
+    padding:0 64px;
+    margin-left:-58px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+  }
+  .dt-row .date,.dt-row .time{
+    font-size:19px;
+    font-weight:400;
+  }
 
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5px;
-        }
+  .approved{
+    text-align:center;
+    font-size:24px;
+    font-weight:700;
+    color:#53bf11;
+    margin-bottom:6px;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.3);
+  }
 
-        .detail-label {
-            font-size: 13.5px;
-            font-weight: 600;
-            color: #282120;
-            line-height: 1.25;
-        }
+  .rate-wrap{
+    text-align:center;
+  }
+  .rate-btn{
+    padding:4px 6px;
+    border-radius:10px;
+    border:2px solid var(--brown);
+    background:#f3f3f0;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+  }
 
-        .detail-value {
-            font-size: 13.5px;
-            font-weight: 400;
-            color: #282120;
-            line-height: 1.34;
-        }
+  .brown-box{
+    width:100%;
+    background:#a36f9c;
+    padding:20px;
+    border-bottom-left-radius:var(--card-radius);
+    border-bottom-right-radius:var(--card-radius);
+    margin-top:-12px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .brown-inner{
+    background:#FEFEFE;
+    border-radius:10px;
+    border:10px solid transparent;
+    height:350px; 
+    width:100%;
+    overflow:hidden;
+    pointer-events: none;
+  }
+  .brown-inner video {
+    pointer-events: none;
+  }
 
-        /* Lower Crisp White Section */
-        .bottom-section {
-            flex: 1;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 24px calc(14px + env(safe-area-inset-bottom, 0px)) 24px;
-        }
+  .left-col{
+    width:145px;   
+    text-align:center;
+    margin-top:10px;   
+  }
+  .right-col{
+    width:145px;   
+    text-align:center;
+    margin-top:3px;
+  }
 
-        .action-area {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  .left-col .sid, .left-col .line,
+  .right-col .meal-title, .right-col .line{
+    margin-left:0;
+  }
+  .assigned-mess{
+    font-size:16px;
+    font-weight:400;
+    margin-top:-20px;   
+    margin-bottom:38px;
+    text-align:center;
+    margin-left:0px;
+    letter-spacing:0.1px; 
+    color:#222;
+    text-shadow:0px 1px 2px rgba(0,0,0,0.4);
+  }
+  .qr-img{
+    width:105%;
+    height:105%;
+    object-fit:cover;
+  }
 
-        .instruction-text {
-            font-size: 19px;
-            font-weight: 500;
-            color: #1c1c1c;
-            text-align: center;
-            line-height: 1.28;
-            letter-spacing: -0.2px;
-            margin-bottom: 11px;
-        }
+  /* Reduced gap from 18px to 4px as requested */
+  .details-card {
+    width: 97%;
+    max-width: var(--card-max);
+    margin-top: 4px;
+    background-color: #f2f2f2;
+    border-radius: var(--card-radius);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    font-family: 'Montserrat', sans-serif;
+  }
 
-        /* Rate Us Maroon Pill Button */
-        .rate-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            background-color: #ffffff;
-            border: 1.5px solid #8c2323;
-            border-radius: 999px;
-            padding: 3.5px 15px;
-            font-family: inherit;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #1b1b1b;
-            letter-spacing: 0.35px;
-            cursor: pointer;
-            margin-bottom: 17px;
-            transition: transform 0.12s ease, background-color 0.15s ease;
-        }
+  .pass-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-        .rate-btn:active {
-            transform: scale(0.97);
-            background-color: #fff8f8;
-        }
+  .pass-detail-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #8c8c8c;
+  }
 
-        .star-icon {
-            color: #f7c548;
-            font-size: 14.5px;
-            line-height: 1;
-        }
+  .pass-detail-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1b1b1b;
+    line-height: 1.35;
+  }
 
-        /* Centered 2-Column Meal Buttons Grid */
-        .meals-grid {
-            width: 100%;
-            max-width: 294px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            column-gap: 15px;
-            row-gap: 14px;
-        }
+  .verification-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border: 2px solid #1b1b1b;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-top: 4px;
+    user-select: none;
+    cursor: pointer;
+  }
 
-        .meal-btn {
-            height: 45px;
-            background: linear-gradient(90deg, #f27069 0%, #f79573 48%, #fdd778 100%);
-            border: none;
-            border-radius: 6px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            font-family: inherit;
-            font-size: 14.5px;
-            font-weight: 500;
-            color: #1c1c1c;
-            cursor: pointer;
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
-        }
+  .verification-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1b1b1b;
+  }
 
-        .meal-btn:active {
-            transform: scale(0.97);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        }
+  .verification-code {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #1b1b1b;
+  }
 
-        /* Bottom Android Gesture Bar */
-        .gesture-bar {
-            width: 136px;
-            height: 4px;
-            background-color: #767676;
-            border-radius: 999px;
-            margin-top: 10px;
-            margin-bottom: 2px;
-        }
+  /* Secret Hidden Editor Modal */
+  .secret-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999;
+    font-family: 'Montserrat', sans-serif;
+  }
 
-        /* Clean Interactive Overlay Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.55);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 100;
-        }
+  .secret-modal.open {
+    display: flex;
+  }
 
-        .modal-backdrop.active {
-            display: flex;
-        }
+  .secret-panel {
+    background: #ffffff;
+    width: 100%;
+    max-width: 360px;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  }
 
-        .modal-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 320px;
-            border-radius: 14px;
-            padding: 22px 20px;
-            text-align: center;
-            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
-        }
+  .secret-panel h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1b1b1b;
+    margin-bottom: 4px;
+  }
 
-        .modal-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: #1e1e1e;
-            margin-bottom: 6px;
-        }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-        .modal-sub {
-            font-size: 13px;
-            color: #555555;
-            margin-bottom: 16px;
-        }
+  .input-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+  }
 
-        .qr-box {
-            width: 168px;
-            height: 168px;
-            margin: 0 auto 16px auto;
-            padding: 10px;
-            border: 1.5px solid #e5e5e5;
-            border-radius: 10px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  .input-group input {
+    padding: 8px 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #1b1b1b;
+  }
 
-        .close-modal-btn {
-            width: 100%;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #f57e77 0%, #fdd879 100%);
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1f1f1f;
-            cursor: pointer;
-        }
-    </style>
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .btn-save {
+    flex: 1;
+    padding: 10px;
+    background: #1b1b1b;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-cancel {
+    padding: 10px 14px;
+    background: #e5e5e5;
+    color: #1b1b1b;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
-    <main class="app-screen">
-        <!-- Top Dark Header -->
-        <header class="top-header">
-            <button class="back-btn" id="backBtn" aria-label="Back">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-            </button>
-            <h1 class="header-title">Mess Coupon</h1>
-            <button class="history-btn" id="historyBtn">Meal History</button>
-        </header>
+<div class="topbar">
+    <div class="handle"></div>
+    <span>Mess Pass</span>
+    <button class="close-btn" onclick="history.back()">✕</button>
+</div>
 
-        <!-- Upper Card Section on Light Gray Background -->
-        <section class="card-wrapper">
-            <div class="profile-card">
-                <!-- Student Photo Loaded Directly from student.png -->
-                <div class="photo-box">
-                    <img src="student.png" alt="Yadu Vamsi Meegada">
-                </div>
+<div class="wrap" style="flex-direction: column; align-items: center;">
+  <article class="card">
 
-                <!-- Student Name & ID -->
-                <div class="student-name">Yadu Vamsi Meegada 12301540</div>
+    <div class="timer" id="timerEl">30</div>
 
-                <!-- Student Details -->
-                <div class="details-group">
-                    <div class="detail-item">
-                        <div class="detail-label">Father's Name</div>
-                        <div class="detail-value">john victor</div>
-                    </div>
+    <div class="content">
+      <div class="profile-row">
 
-                    <div class="detail-item">
-                        <div class="detail-label">Mother's Name</div>
-                        <div class="detail-value">chavala victor</div>
-                    </div>
+  <div>
+    <div class="avatar">
+      <img src="profile.jpg" class="avatar-img">
+    </div>
+    <div class="left-col">
+      <div class="sid">12311536</div>
+      <div class="line">Chavala john victor</div>
+    </div>
+  </div>
 
-                    <div class="detail-item">
-                        <div class="detail-label">Program Name</div>
-                        <div class="detail-value">P132:B.Tech. (Computer Science and Engineering)<br>(2023)</div>
-                    </div>
+  <div>
+    <div class="qr-box">
+      <img src="qr.png" class="qr-img">
+    </div>
+    <div class="right-col">
+      <div class="meal-title" id="mealTitle"></div>
+      <div class="line">Mess BH-4</div>
+    </div>
+  </div>
 
-                    <div class="detail-item">
-                        <div class="detail-label">Hostel</div>
-                        <div class="detail-value">Boys Hostel-04- A210-Bed D (Standard Air<br>Conditioned 4 Seater)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+</div>
 
-        <!-- Lower White Section -->
-        <section class="bottom-section">
-            <div class="action-area">
-                <h2 class="instruction-text">Tap on the meal name to<br>scan and avail food.</h2>
+      <div class="course">
+        P132: B.Tech. (Computer Science and Engineering)(2023)
+      </div>
+      <div class="assigned-mess">
+        Your Assigned Mess - Mess BH-4
+      </div>
 
-                <button class="rate-btn" id="rateBtn">
-                    <span class="star-icon">★</span>
-                    <span>RATE US</span>
-                </button>
+      <div class="dt-row">
+        <div class="date" id="dateText">Nov 20, 2025</div>
+        <div class="time" id="timeText">1:24 AM</div>
+      </div>
 
-                <div class="meals-grid">
-                    <button class="meal-btn" data-meal="BreakFast">
-                        <span>BreakFast</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="4" y1="12" x2="20" y2="12"></line>
-                            <polyline points="14 6 20 12 14 18"></polyline>
-                        </svg>
-                    </button>
+      <div class="approved">Meal Approved</div>
 
-                    <button class="meal-btn" data-meal="Lunch">
-                        <span>Lunch</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="4" y1="12" x2="20" y2="12"></line>
-                            <polyline points="14 6 20 12 14 18"></polyline>
-                        </svg>
-                    </button>
+      <div class="rate-wrap">                                   
+        <button class="rate-btn" onclick="window.location.href='feedback.html'">⭐ RATE US</button>
+      </div>
 
-                    <button class="meal-btn" data-meal="Dinner">
-                        <span>Dinner</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="4" y1="12" x2="20" y2="12"></line>
-                            <polyline points="14 6 20 12 14 18"></polyline>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+    </div>
 
-            <!-- Android Bottom Navigation Pill -->
-            <div class="gesture-bar"></div>
-        </section>
+    <div class="brown-box">
+      <div class="brown-inner">
+        <video src="video.mp4" autoplay muted playsinline style="
+            width:94%;
+            height:94%;
+            object-fit:contain;
+            display:block;
+            margin-left:14px;
+            margin-top:10px; 
+        "></video>
+      </div>
+    </div>
 
-        <!-- Interactive Coupon / Info Modal -->
-        <div class="modal-backdrop" id="modalBackdrop">
-            <div class="modal-card">
-                <div class="modal-title" id="modalTitle">BreakFast Coupon</div>
-                <div class="modal-sub" id="modalSub">ID: 12301540 • Boys Hostel-04</div>
-                <div class="qr-box" id="qrBox">
-                    <!-- Crisp SVG QR Pass -->
-                    <svg width="144" height="144" viewBox="0 0 29 29" fill="#1b1b1b" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1h7v7H1V1zm2 2v3h3V3H3zm18-2h7v7h-7V1zm2 2v3h3V3h-3zM1 21h7v7H1v-7zm2 2v3h3v-3H3zm8-22h2v2h-2V1zm4 0h2v4h-2V1zm-4 4h2v2h-2V5zm2 2h2v2h-2V7zm4-2h2v2h-2V5zM1 11h2v2H1v-2zm4 0h4v2H5v-2zm6 0h2v4h-2v-4zm4 2h4v2h-4v-2zm6-2h2v4h-2v-4zm4 0h3v2h-3v-2zM1 15h4v2H1v-2zm6 2h2v2H7v-2zm4-2h2v4h-2v-4zm6 2h2v2h-2v-2zm4-2h4v2h-4v-2zm6 2h1v4h-1v-4zM11 21h4v2h-4v-2zm6 0h2v4h-2v-4zm4 2h4v2h-4v-2zm-10 2h2v3h-2v-3zm4 1h6v2h-6v-2zm8 0h4v2h-4v-2z"/>
-                    </svg>
-                </div>
-                <button class="close-modal-btn" id="closeModalBtn">Done</button>
-            </div>
+  </article>
+
+  <!-- Details card with reduced top margin gap -->
+  <div class="details-card">
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Father's Name</div>
+          <div class="pass-detail-value" id="valFather">Mahesh KC (9483746197)</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Mother's Name</div>
+          <div class="pass-detail-value" id="valMother">Reetha()</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Program</div>
+          <div class="pass-detail-value" id="valProgram">P132:B.Tech. (Computer Science and Engineering)(2022)</div>
+      </div>
+
+      <div class="pass-detail-item">
+          <div class="pass-detail-label">Hostel</div>
+          <div class="pass-detail-value" id="valHostel">Boys Hostel-04-B511-Bed C Mess</div>
+      </div>
+
+      <!-- Secret Trigger: Tap this box 5 times quickly to open editor -->
+      <div class="verification-box" id="secretTrigger">
+          <span class="verification-label">Verification Code</span>
+          <span class="verification-code" id="verificationCode"></span>
+      </div>
+  </div>
+</div>
+
+<!-- Hidden Secret Edit Popup -->
+<div class="secret-modal" id="secretModal">
+    <div class="secret-panel">
+        <h3>Edit Details</h3>
+        <div class="input-group">
+            <label>Father's Name</label>
+            <input type="text" id="inFather">
         </div>
-    </main>
+        <div class="input-group">
+            <label>Mother's Name</label>
+            <input type="text" id="inMother">
+        </div>
+        <div class="input-group">
+            <label>Program</label>
+            <input type="text" id="inProgram">
+        </div>
+        <div class="input-group">
+            <label>Hostel</label>
+            <input type="text" id="inHostel">
+        </div>
+        <div class="input-group">
+            <label>Verification Code (leave blank for random)</label>
+            <input type="text" id="inCode" maxlength="8">
+        </div>
+        <div class="btn-row">
+            <button class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button class="btn-save" id="saveBtn">Save</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Interactive modals for Meal buttons, Rate Us, and Meal History
-        const modalBackdrop = document.getElementById('modalBackdrop');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalSub = document.getElementById('modalSub');
-        const qrBox = document.getElementById('qrBox');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+<script>
+let sec = 30;
+const timerEl = document.getElementById("timerEl");
+timerEl.textContent = sec;
 
-        function openModal(title, sub, showQr) {
-            modalTitle.textContent = title;
-            modalSub.textContent = sub;
-            qrBox.style.display = showQr ? 'flex' : 'none';
-            modalBackdrop.classList.add('active');
-        }
+let t = setInterval(()=>{
+  sec--;
+  if(sec <= 1){
+    timerEl.textContent = 1;
+    clearInterval(t);
+  } else {
+    timerEl.textContent = sec;
+  }
+},1000);
 
-        document.querySelectorAll('.meal-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const meal = btn.getAttribute('data-meal');
-                openModal(`${meal} Coupon`, 'Yadu Vamsi Meegada • 12301540', true);
-            });
-        });
+function pad(n){return n<10?"0"+n:n;}
+function updateDT(){
+  const now=new Date();
+  const m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("dateText").textContent=
+    `${m[now.getMonth()]} ${pad(now.getDate())}, ${now.getFullYear()}`;
+  let h=now.getHours(), mm=pad(now.getMinutes()), ap=h>=12?"PM":"AM";
+  h=h%12||12;
+  document.getElementById("timeText").textContent=`${h}:${mm} ${ap}`;
+}
+updateDT();
+setInterval(updateDT,1000);
 
-        document.getElementById('rateBtn').addEventListener('click', () => {
-            openModal('Rate Mess Food', 'Thank you for rating today’s meal experience! ★★★★★', false);
-        });
+function updateMeal() {
+  const hour = new Date().getHours();
+  let meal = "Dinner";
+  if (hour < 11) meal = "BreakFast";
+  else if (hour < 16) meal = "Lunch";
+  document.getElementById("mealTitle").textContent = meal;
+}
+updateMeal();
+const brownBox = document.querySelector(".brown-box");
 
-        document.getElementById('historyBtn').addEventListener('click', () => {
-            openModal('Meal History', 'No recent availed coupons found for today.', false);
-        });
+let tapCount = 0;
+let tapTimer = null;
 
-        closeModalBtn.addEventListener('click', () => {
-            modalBackdrop.classList.remove('active');
-        });
+const defaultColor = "#1b4f1b";
 
-        modalBackdrop.addEventListener('click', (e) => {
-            if (e.target === modalBackdrop) {
-                modalBackdrop.classList.remove('active');
-            }
-        });
-    </script>
+const savedColor = localStorage.getItem("messPassColor");
+
+if (savedColor) {
+    brownBox.style.backgroundColor = savedColor;
+}
+
+function askForColor() {
+    const currentColor =
+        localStorage.getItem("messPassColor") || defaultColor;
+
+    const color = prompt(
+        "Enter HTML color code:\n\nExample: #FF0000",
+        currentColor
+    );
+
+    if (color === null) {
+        return;
+    }
+
+    const newColor = color.trim();
+    const test = new Option().style;
+    test.color = newColor;
+
+    if (test.color === "") {
+        alert(
+            "Invalid color code!\n\nPlease enter a valid HTML color code.\nExample: #FF0000"
+        );
+        return;
+    }
+
+    brownBox.style.backgroundColor = newColor;
+    localStorage.setItem(
+        "messPassColor",
+        newColor
+    );
+}
+
+function registerTap() {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(function () {
+        tapCount = 0;
+    }, 800);
+
+    if (tapCount === 3) {
+        tapCount = 0;
+        clearTimeout(tapTimer);
+        askForColor();
+    }
+}
+
+/* Mobile */
+brownBox.addEventListener(
+    "touchend",
+    function(event) {
+        event.preventDefault();
+        registerTap();
+    },
+    {
+        passive:false
+    }
+);
+
+/* Laptop/Desktop */
+brownBox.addEventListener(
+    "click",
+    function() {
+        registerTap();
+    }
+);
+
+/* Details Secret Editor Logic */
+const elFather = document.getElementById('valFather');
+const elMother = document.getElementById('valMother');
+const elProgram = document.getElementById('valProgram');
+const elHostel = document.getElementById('valHostel');
+const elCode = document.getElementById('verificationCode');
+
+function generateRandomCode() {
+    return Math.floor(10000000 + Math.random() * 90000000);
+}
+
+function loadValues() {
+    const saved = JSON.parse(localStorage.getItem('passDetails') || '{}');
+    if (saved.father) elFather.textContent = saved.father;
+    if (saved.mother) elMother.textContent = saved.mother;
+    if (saved.program) elProgram.textContent = saved.program;
+    if (saved.hostel) elHostel.textContent = saved.hostel;
+    elCode.textContent = saved.code ? saved.code : generateRandomCode();
+}
+loadValues();
+
+let detailTapCount = 0;
+let detailTapTimer = null;
+const secretTrigger = document.getElementById('secretTrigger');
+const secretModal = document.getElementById('secretModal');
+
+secretTrigger.addEventListener('click', () => {
+    detailTapCount++;
+    clearTimeout(detailTapTimer);
+    detailTapTimer = setTimeout(() => { detailTapCount = 0; }, 1200);
+
+    if (detailTapCount >= 5) {
+        detailTapCount = 0;
+        document.getElementById('inFather').value = elFather.textContent;
+        document.getElementById('inMother').value = elMother.textContent;
+        document.getElementById('inProgram').value = elProgram.textContent;
+        document.getElementById('inHostel').value = elHostel.textContent;
+        document.getElementById('inCode').value = '';
+        secretModal.classList.add('open');
+    }
+});
+
+document.getElementById('cancelBtn').addEventListener('click', () => {
+    secretModal.classList.remove('open');
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+    const updated = {
+        father: document.getElementById('inFather').value.trim(),
+        mother: document.getElementById('inMother').value.trim(),
+        program: document.getElementById('inProgram').value.trim(),
+        hostel: document.getElementById('inHostel').value.trim(),
+        code: document.getElementById('inCode').value.trim()
+    };
+    localStorage.setItem('passDetails', JSON.stringify(updated));
+    loadValues();
+    secretModal.classList.remove('open');
+});
+</script>
+
 </body>
 </html>
