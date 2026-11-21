@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Mess Coupon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,46 +16,56 @@
         }
 
         html, body {
-            height: 100%;
+            min-height: 100%;
             width: 100%;
             font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #181818;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: #ffffff;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        @media (min-width: 480px) {
+            body {
+                background-color: #181818;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px 0;
+            }
         }
 
         /* Mobile App Container */
         .app-screen {
             width: 100%;
             max-width: 412px;
-            height: 100dvh;
-            max-height: 915px;
+            min-height: 100dvh;
             background-color: #f3f3f3;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             position: relative;
         }
 
         @media (min-width: 480px) {
             .app-screen {
-                height: 860px;
+                min-height: 820px;
                 border-radius: 24px;
+                overflow: hidden;
                 box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
             }
         }
 
-        /* Top Navigation Header */
+        /* Sticky Compact Top Navigation Header */
         .top-header {
-            height: 56px;
-            min-height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            min-height: 52px;
+            padding: env(safe-area-inset-top, 0px) 14px 0 14px;
             background-color: #2b2b2b;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
             user-select: none;
         }
 
@@ -66,16 +76,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
+            padding: 6px 4px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .header-title {
-            font-size: 16.5px;
-            font-weight: 400;
+            font-size: 16px;
+            font-weight: 500;
             letter-spacing: 0.1px;
             color: #ffffff;
-            margin-left: 34px;
+            white-space: nowrap;
+            margin-left: 28px;
         }
 
         .history-btn {
@@ -83,35 +95,37 @@
             border: none;
             color: #ffffff;
             font-family: inherit;
-            font-size: 15.5px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
             cursor: pointer;
-            padding: 4px 2px;
+            padding: 6px 2px;
+            flex-shrink: 0;
         }
 
         /* Upper Light Gray Wrapper Around Floating Card */
         .card-wrapper {
             background-color: #f3f3f3;
-            padding: 10px 14px 12px 14px;
+            padding: 12px 14px 12px 14px;
             flex-shrink: 0;
         }
 
-        /* Floating Student Profile Gradient Card */
+        /* Floating Student Profile Gradient Card (Deeper coral-red left -> lighter pastel yellow right) */
         .profile-card {
-            background: linear-gradient(90deg, #f57e77 0%, #f99b78 48%, #fdd879 100%);
+            background: linear-gradient(90deg, #f27069 0%, #f79573 48%, #fdd778 100%);
             border-radius: 9px;
-            padding: 18px 18px 20px 18px;
+            padding: 17px 18px 19px 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #1f1f1f;
+            color: #231f20;
         }
 
         /* Student Photo Container */
         .photo-box {
-            width: 112px;
-            height: 122px;
-            border-radius: 10px;
+            width: 114px;
+            height: 120px;
+            border-radius: 11px;
             overflow: hidden;
             background-color: #e6e7e9;
             position: relative;
@@ -141,11 +155,11 @@
 
         /* Student Name + Registration ID */
         .student-name {
-            margin-top: 10px;
-            margin-bottom: 18px;
+            margin-top: 9px;
+            margin-bottom: 17px;
             font-size: 14.5px;
-            font-weight: 500;
-            color: #1c1c1c;
+            font-weight: 600;
+            color: #231f20;
             text-align: center;
             letter-spacing: -0.1px;
         }
@@ -155,28 +169,29 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 11px;
+            gap: 10.5px;
+            padding-left: 2px;
             text-align: left;
         }
 
         .detail-item {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 1.5px;
         }
 
         .detail-label {
             font-size: 13.5px;
-            font-weight: 500;
-            color: #1e1e1e;
+            font-weight: 600;
+            color: #282120;
             line-height: 1.25;
         }
 
         .detail-value {
-            font-size: 13.8px;
+            font-size: 13.5px;
             font-weight: 400;
-            color: #242424;
-            line-height: 1.32;
+            color: #282120;
+            line-height: 1.34;
         }
 
         /* Lower Crisp White Section */
@@ -187,7 +202,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 22px 28px 8px 28px;
+            padding: 18px 24px calc(14px + env(safe-area-inset-bottom, 0px)) 24px;
         }
 
         .action-area {
@@ -198,32 +213,32 @@
         }
 
         .instruction-text {
-            font-size: 20px;
-            font-weight: 400;
-            color: #1b1b1b;
+            font-size: 19px;
+            font-weight: 500;
+            color: #1c1c1c;
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.28;
             letter-spacing: -0.2px;
-            margin-bottom: 12px;
+            margin-bottom: 11px;
         }
 
-        /* Rate Us Maroon Border Button */
+        /* Rate Us Maroon Pill Button */
         .rate-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             background-color: #ffffff;
-            border: 1.5px solid #8a2424;
-            border-radius: 8px;
-            padding: 4px 14px;
+            border: 1.5px solid #8c2323;
+            border-radius: 999px;
+            padding: 3.5px 15px;
             font-family: inherit;
-            font-size: 13.5px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #1b1b1b;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.35px;
             cursor: pointer;
-            margin-bottom: 18px;
+            margin-bottom: 17px;
             transition: transform 0.12s ease, background-color 0.15s ease;
         }
 
@@ -233,14 +248,15 @@
         }
 
         .star-icon {
-            color: #f6c945;
-            font-size: 15px;
+            color: #f7c548;
+            font-size: 14.5px;
             line-height: 1;
         }
 
-        /* 2-Column Meal Buttons Grid */
+        /* Centered 2-Column Meal Buttons Grid */
         .meals-grid {
             width: 100%;
+            max-width: 294px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             column-gap: 15px;
@@ -248,18 +264,18 @@
         }
 
         .meal-btn {
-            height: 46px;
-            background: linear-gradient(90deg, #f57e77 0%, #f99b78 48%, #fdd879 100%);
+            height: 45px;
+            background: linear-gradient(90deg, #f27069 0%, #f79573 48%, #fdd778 100%);
             border: none;
             border-radius: 6px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.18);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 7px;
             font-family: inherit;
-            font-size: 15.5px;
-            font-weight: 400;
+            font-size: 14.5px;
+            font-weight: 500;
             color: #1c1c1c;
             cursor: pointer;
             transition: transform 0.12s ease, box-shadow 0.12s ease;
@@ -282,14 +298,14 @@
 
         /* Clean Interactive Overlay Modal */
         .modal-backdrop {
-            position: absolute;
+            position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.55);
             display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            z-index: 50;
+            z-index: 100;
         }
 
         .modal-backdrop.active {
@@ -383,22 +399,22 @@
                 <div class="details-group">
                     <div class="detail-item">
                         <div class="detail-label">Father's Name</div>
-                        <div class="detail-value">Prem Kumar Meegada (7702046249)</div>
+                        <div class="detail-value">john victor</div>
                     </div>
 
                     <div class="detail-item">
                         <div class="detail-label">Mother's Name</div>
-                        <div class="detail-value">Vijaya Lakshmi Meegada ()</div>
+                        <div class="detail-value">chavala victor</div>
                     </div>
 
                     <div class="detail-item">
                         <div class="detail-label">Program Name</div>
-                        <div class="detail-value">P132:B.Tech. (Computer Science and Engineering) (2023)</div>
+                        <div class="detail-value">P132:B.Tech. (Computer Science and Engineering)<br>(2023)</div>
                     </div>
 
                     <div class="detail-item">
                         <div class="detail-label">Hostel</div>
-                        <div class="detail-value">Boys Hostel-04- A210-Bed D (Standard Air Conditioned 4 Seater)</div>
+                        <div class="detail-value">Boys Hostel-04- A210-Bed D (Standard Air<br>Conditioned 4 Seater)</div>
                     </div>
                 </div>
             </div>
