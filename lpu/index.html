@@ -446,6 +446,22 @@ button,input{font:inherit}
 }
 
 
+/* Fix: Code 1 and Code 2 both used the class name .verification-code.
+   In Code 1 it styles the whole bordered box; in Code 2 it styles only the number.
+   Reset the conflicting Code 1 box styles only while the Code 2 pass is visible. */
+body.pass-view .verification-code {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  display: inline;
+  align-items: initial;
+  justify-content: initial;
+  gap: normal;
+  background: transparent;
+  box-sizing: content-box;
+}
+
 /* ===== Code 2: Meal-approved pass interface (merged without redesign) ===== */
 
   :root{
@@ -1403,8 +1419,8 @@ function showPass(){
       <img src="profile.jpg" class="avatar-img">
     </div>
     <div class="left-col">
-      <div class="sid">12311396</div>
-      <div class="line">Chavala John Victor</div>
+      <div class="sid">12311286</div>
+      <div class="line">Borra Ajay Kumar</div>
     </div>
   </div>
 
